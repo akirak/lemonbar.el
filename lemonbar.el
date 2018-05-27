@@ -134,7 +134,7 @@ lemonbar.")
 
 (defcustom lemonbar-output-template nil
   "Output template of lemonbar."
-  :type '(repeat (choice string variable))
+  :type '(repeat (choice string variable sexp))
   :group 'lemonbar)
 
 ;;;###autoload
