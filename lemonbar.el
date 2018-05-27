@@ -108,16 +108,24 @@ lemonbar.")
     (run-hooks 'lemonbar-before-update-hook))
   (lemonbar--log (concat (lemonbar--generate-output) "\n")))
 
+(defcustom lemonbar-separator ""
+  "Separator inserted between items in `lemonbar-output-template'."
+  :group 'lemonbar
+  :type 'string)
+
 (defun lemonbar--generate-output ()
   "Generate an output string from `lemonbar-output-template'."
-  (cl-loop for item in lemonbar-output-template
-           concat (pcase item
-                    ((pred stringp) item)
-                    ('nil nil)
-                    ('t nil)
-                    ((and (pred symbolp)
-                          (pred boundp)) (symbol-value item))
-                    ((pred listp) (eval item)))))
+  (mapconcat (lambda (item)
+               (pcase item
+                 ((pred stringp) item)
+                 ('() nil)
+                 ('t nil)
+                 ((and (pred symbolp)
+                       (pred boundp)) (symbol-value item))
+                 (`(:eval ,list) (eval list))
+                 ((pred listp) (eval item))))
+             lemonbar-output-template
+             lemonbar-separator))
 
 (defcustom lemonbar-output-template nil
   "Output template of lemonbar."
