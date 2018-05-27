@@ -1,4 +1,4 @@
-;;; lemonbar.el --- Lemonbar integration for Emacs -*- lexical-binding: t -*-
+;;; lemonbar.el --- Lemonbar integration -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2018 by Akira Komamura
 
@@ -157,3 +157,4 @@ started, because it checks if the lemonbar has started."
   (add-hook 'desktop-clear-preserve-buffers "\\*lemonbar\\*"))
 
 (provide 'lemonbar)
+;;; lemonbar.el ends here
