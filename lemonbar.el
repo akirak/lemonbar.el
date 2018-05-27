@@ -61,6 +61,9 @@ called or the function is triggered by external events."
   "List of functions to run before a new content is sent to the running
 lemonbar.")
 
+(defvar lemonbar-started nil
+  "Non-nil if lemonbar has started.")
+
 (defun lemonbar-start ()
   "Start a lemonbar."
   (interactive)
@@ -68,6 +71,7 @@ lemonbar.")
   (when-let ((buf (apply #'make-comint-in-buffer "lemonbar" lemonbar-buffer
                          "lemonbar" nil lemonbar-options)))
     (set-process-query-on-exit-flag (get-buffer-process buf) nil))
+  (setq lemonbar-started t)
   (run-hooks 'lemonbar-start-hook)
   (lemonbar-update))
 
@@ -80,6 +84,7 @@ lemonbar.")
       (sleep-for 0.05)
       (kill-buffer lemonbar-buffer)
       (run-hooks 'lemonbar-kill-hook)
+      (setq lemonbar-started nil)
       t)))
 
 (defvar lemonbar-timer nil
@@ -131,6 +136,16 @@ lemonbar.")
   "Output template of lemonbar."
   :type '(repeat (choice string variable))
   :group 'lemonbar)
+
+;;;###autoload
+(defun lemonbar-set-output-template (list)
+  "Update the output template to LIST and immediately refresh the bar content.
+
+This is a convenient way to experiment with `lemonbar-output-template' during
+development, but also is it safe to call this function before the lemonbar is
+started, because it checks if the lemonbar has started."
+  (setq lemonbar-output-template list)
+  (when lemonbar-started (lemonbar-update)))
 
 (defconst lemonbar-align-right "%{r}"
   "Align the following content to the right.")
